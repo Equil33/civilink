@@ -1,4 +1,3 @@
-git push
 #
 # Generated file, do not edit.
 #
