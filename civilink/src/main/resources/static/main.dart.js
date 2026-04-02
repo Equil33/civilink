@@ -92395,7 +92395,7 @@ case 6:case 1:return A.J(q,r)
 case 2:return A.I(o.at(-1),r)}})
 return A.K($async$xO,r)}}
 A.a2h.prototype={
-ga7W(){var s="http://127.0.0.1:8081",r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
+ga7W(){var s=self.location.origin,r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
 if(B.c.h9(r,"/api/civilink"))return r
 return r+"/api/civilink"},
 i6(a,b,c,d,e,f,g,h,i){return this.awo(a,b,c,d,e,f,g,h,i)},
@@ -92442,7 +92442,7 @@ break
 case 1:return A.J(q,r)}})
 return A.K($async$uC,r)}}
 A.afa.prototype={
-gajp(){var s="http://127.0.0.1:8081",r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
+gajp(){var s=self.location.origin,r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
 if(B.c.h9(r,"/api/civilink"))return r
 return r+"/api/civilink"},
 Bc(){var s=!0
@@ -92489,10 +92489,10 @@ if(s==null)s=1}else s=1
 return new A.dh(A.dR(a.i(0,"id")),A.bt(a.i(0,"name")),s)},
 $S:584}
 A.agI.prototype={
-gEC(){var s="http://127.0.0.1:8081",r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
+gEC(){var s=self.location.origin,r=B.c.h9(s,"/")?B.c.a0(s,0,20):s
 if(B.c.h9(r,"/api/civilink"))return r
 return r+"/api/civilink"},
-awQ(a){var s,r,q,p="http://127.0.0.1:8081"
+awQ(a){var s,r,q,p=self.location.origin
 if(a.length===0)return a
 s=B.c.c6(a)
 if(B.c.bw(s,"http://")||B.c.bw(s,"https://"))return s
