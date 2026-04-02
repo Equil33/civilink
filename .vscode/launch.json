@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CivilinkApplication<civilink>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.civilink.civilink.CivilinkApplication",
+            "projectName": "civilink",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
