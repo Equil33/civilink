@@ -5,21 +5,24 @@ FROM eclipse-temurin:21-jdk AS builder-spring
 WORKDIR /app
 COPY civilink/ ./civilink/
 WORKDIR /app/civilink
+
+# Donner la permission d'exécution au wrapper Maven
+RUN chmod +x mvnw
+
+# Builder le backend Spring Boot
 RUN ./mvnw clean package -DskipTests
 
 # -------------------------
 # Étape 2 : Builder Flutter Web
 # -------------------------
 FROM ghcr.io/cirruslabs/flutter:stable AS builder-flutter
-
 WORKDIR /app
 
 # Copier le frontend
 COPY mon-quartier-vigilant-main-1/mon-quartier-vigilant-main/ ./flutter_app/
-
 WORKDIR /app/flutter_app
 
-# Récupérer les dépendances et build Web
+# Récupérer les dépendances et builder le Web
 RUN flutter pub get
 RUN flutter build web --release
 
