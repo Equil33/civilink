@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpRequestMethodNotAllowedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,12 +37,6 @@ public class GlobalExceptionHandler {
         String message = details.isBlank() ? "Validation failed" : details;
         Map<String, Object> body = baseBody(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
         return jsonResponse(HttpStatus.BAD_REQUEST, body);
-    }
-
-    @ExceptionHandler(HttpRequestMethodNotAllowedException.class)
-    public ResponseEntity<Map<String, Object>> handleMethodNotAllowed(HttpRequestMethodNotAllowedException exception, HttpServletRequest request) {
-        Map<String, Object> body = baseBody(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed: " + exception.getMethod(), request.getRequestURI());
-        return jsonResponse(HttpStatus.METHOD_NOT_ALLOWED, body);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
