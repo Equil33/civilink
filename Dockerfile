@@ -35,8 +35,8 @@ WORKDIR /app
 # Copier backend Spring Boot
 COPY --from=builder-spring /app/civilink/target/civilink-0.0.1-SNAPSHOT.jar ./app.jar
 
-# Copier frontend Flutter Web
-COPY --from=builder-flutter /app/flutter_app/build/web ./frontend
+# Copier frontend Flutter Web dans le dossier static de Spring Boot
+COPY --from=builder-flutter /app/flutter_app/build/web /app/static
 
 # Expose port
 EXPOSE 8080
