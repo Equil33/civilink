@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotAllowedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,7 +27,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleApiException(ApiException exception, HttpServletRequest request) {
         Map<String, Object> body = baseBody(exception.getStatus(), exception.getMessage(), request.getRequestURI());
         body.put("detail", exception.getMessage());
-        return ResponseEntity.status(exception.getStatus()).body(body);
+        return jsonResponse(exception.getStatus(), body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,13 +37,19 @@ public class GlobalExceptionHandler {
             .collect(Collectors.joining(", "));
         String message = details.isBlank() ? "Validation failed" : details;
         Map<String, Object> body = baseBody(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
-        return ResponseEntity.badRequest().body(body);
+        return jsonResponse(HttpStatus.BAD_REQUEST, body);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotAllowedException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodNotAllowed(HttpRequestMethodNotAllowedException exception, HttpServletRequest request) {
+        Map<String, Object> body = baseBody(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed: " + exception.getMethod(), request.getRequestURI());
+        return jsonResponse(HttpStatus.METHOD_NOT_ALLOWED, body);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNoResource(NoResourceFoundException exception, HttpServletRequest request) {
         Map<String, Object> body = baseBody(HttpStatus.NOT_FOUND, "Not found", request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        return jsonResponse(HttpStatus.NOT_FOUND, body);
     }
 
     @ExceptionHandler(Exception.class)
@@ -48,7 +57,7 @@ public class GlobalExceptionHandler {
         log.error("Unhandled exception for {}", request.getRequestURI(), exception);
         Map<String, Object> body = baseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", request.getRequestURI());
         body.put("detail", exception.getClass().getName() + ": " + String.valueOf(exception.getMessage()));
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        return jsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, body);
     }
 
     private String formatFieldError(FieldError fieldError) {
@@ -62,6 +71,13 @@ public class GlobalExceptionHandler {
         body.put("error", message);
         body.put("path", path);
         return body;
+    }
+
+    /** Builds a ResponseEntity with Content-Type: application/json always set. */
+    private ResponseEntity<Map<String, Object>> jsonResponse(HttpStatus status, Map<String, Object> body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(body, headers, status);
     }
 }
 
