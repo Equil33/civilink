@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="mon_quartier_vigilant_flutter">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>mon_quartier_vigilant_flutter</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script>
+    (async function () {
+      // Loads runtime config from the backend (Railway vars).
+      // `/env.js` sets: window.__env.GOOGLE_MAPS_API_KEY
+      try {
+        const env = document.createElement("script");
+        env.src = "/env.js";
+        env.async = true;
+        await new Promise((resolve, reject) => {
+          env.onload = resolve;
+          env.onerror = reject;
+          document.head.appendChild(env);
+        });
+      } catch (_) {}
+
+      const GOOGLE_MAPS_API_KEY = (window.__env && window.__env.GOOGLE_MAPS_API_KEY) || "";
+
+      const shouldResetSw = window.location.search.includes("reset-sw=1");
+      const isLocalHost =
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost";
+
+      if ((isLocalHost || shouldResetSw) && "serviceWorker" in navigator) {
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map((r) => r.unregister()));
+        } catch (_) {}
+      }
+
+      if ((isLocalHost || shouldResetSw) && "caches" in window) {
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        } catch (_) {}
+      }
+
+      if (GOOGLE_MAPS_API_KEY) {
+        await new Promise((resolve, reject) => {
+          const maps = document.createElement("script");
+          maps.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+          maps.async = true;
+          maps.defer = true;
+          maps.onload = resolve;
+          maps.onerror = reject;
+          document.head.appendChild(maps);
+        });
+      }
+
+      const script = document.createElement("script");
+      script.src = "flutter_bootstrap.js";
+      script.async = true;
+      document.body.appendChild(script);
+    })();
+  </script>
+</body>
+</html>
